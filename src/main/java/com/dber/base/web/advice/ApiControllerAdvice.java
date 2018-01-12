@@ -1,14 +1,12 @@
 package com.dber.base.web.advice;
 
+import com.dber.base.IClient;
 import com.dber.base.util.BaseKeyUtil;
 import com.dber.config.SystemConfig;
 import com.dber.util.Util;
-import org.aopalliance.reflect.Method;
-import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -26,10 +24,9 @@ import java.util.Map;
  * @since 2018/1/12
  */
 @EnableConfigurationProperties({SystemConfig.class})
-@ControllerAdvice(basePackages = "com.dber.*.web.api")
+@ControllerAdvice(assignableTypes = IClient.class)
 @Configuration
-@EnableAspectJAutoProxy
-public class ApiControllerAdvice implements MethodBeforeAdvice{
+public class ApiControllerAdvice {
 
     @Autowired
     private SystemConfig config;
@@ -40,25 +37,20 @@ public class ApiControllerAdvice implements MethodBeforeAdvice{
     public void validAppAndKey(HttpServletRequest request) {
         String app = request.getParameter(BaseKeyUtil.auth_params_system);
         if (Util.isBlank(app)) {
-            throw new IllegalArgumentException("未知错误！");
+            throw new IllegalArgumentException("valid-error！");
         }
         String key = grant.get(app);
         if (key == null) {
-            throw new IllegalArgumentException("未知错误！");
+            throw new IllegalArgumentException("valid-error！");
         }
         String requestKey = request.getParameter(BaseKeyUtil.auth_params_key);
         if (!key.equals(requestKey)) {
-            throw new IllegalArgumentException("未知错误！");
+            throw new IllegalArgumentException("valid-error！");
         }
     }
 
     @PostConstruct
     public void init() {
         grant = config.getAuth().getGrant();
-    }
-
-    @Override
-    public void before(java.lang.reflect.Method method, Object[] args, Object target) throws Throwable {
-        System.out.println(args);
     }
 }
