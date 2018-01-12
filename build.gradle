@@ -42,7 +42,7 @@ repositories {
                 "org.springframework:spring-jdbc:${springVersion}",
                 "org.springframework:spring-context-support:${springVersion}",
                 "org.springframework:spring-websocket:${springVersion}",
-                'org.springframework:spring-aspects:${springVersion}',
+                "org.springframework:spring-aspects:${springVersion}",
                 "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}",
                 "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
                 "org.springframework.boot:spring-boot-starter:${springBootVersion}",
