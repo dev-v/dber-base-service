@@ -73,7 +73,7 @@ public interface IMapper<E> {
 	 * 根据主键集合获取数据
 	 * </pre>
 	 * 
-	 * @param key
+	 * @param keys
 	 * @return
 	 */
 	Collection<E> gets(Serializable[] keys);
@@ -89,12 +89,18 @@ public interface IMapper<E> {
 	Collection<E> query(Page<E> e);
 
 	/**
+	 * 查询返回的数据只有一条
+	 *
+	 * @param e
+	 * @return
+	 */
+	E queryOne(E e);
+
+	/**
 	 * <pre>
 	 * 不建议使用
-	 * 若一定要使用 请务必加上limit字句
 	 * </pre>
 	 * 
-	 * @param page
 	 * @return
 	 */
 	Collection<E> queryWithoutPage(E e);
@@ -105,7 +111,6 @@ public interface IMapper<E> {
 	 * 最大返回1000条
 	 * </pre>
 	 * 
-	 * @param key
 	 * @return
 	 */
 	long[] getIds(E e);
@@ -116,7 +121,7 @@ public interface IMapper<E> {
 	 * 最大一次删除1000条
 	 * </pre>
 	 * 
-	 * @param key
+	 * @param keys
 	 * @return
 	 */
 	int dels(Serializable[] keys);

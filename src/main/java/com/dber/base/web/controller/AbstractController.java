@@ -152,6 +152,17 @@ public abstract class AbstractController<E> {
     }
 
     /**
+     * 查询一条数据
+     *
+     * @param data
+     * @return
+     */
+    @RequestMapping("/queryOne")
+    Response<E> queryOne(E data) {
+        return Response.newSuccessResponse(service.queryOne(data));
+    }
+
+    /**
      * <pre>
      * 根据条件获取主键集合
      * 最大返回1000条

@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -34,17 +35,16 @@ public class ApiControllerAdvice {
     private Map<String, String> grant;
 
     @ModelAttribute
-    public void validAppAndKey(HttpServletRequest request) {
-        String app = request.getParameter(BaseKeyUtil.auth_params_system);
+    public void validAppAndKey(@RequestParam(BaseKeyUtil.auth_params_system) String app
+            , @RequestParam(BaseKeyUtil.auth_params_key) String key) {
         if (Util.isBlank(app)) {
             throw new IllegalArgumentException("valid-error！");
         }
-        String key = grant.get(app);
-        if (key == null) {
+        String grantKey = grant.get(app.toLowerCase());
+        if (grantKey == null) {
             throw new IllegalArgumentException("valid-error！");
         }
-        String requestKey = request.getParameter(BaseKeyUtil.auth_params_key);
-        if (!key.equals(requestKey)) {
+        if (!grantKey.equals(key)) {
             throw new IllegalArgumentException("valid-error！");
         }
     }
