@@ -1,7 +1,7 @@
 package com.dber.base.web.login;
 
+import com.dber.base.entity.Account;
 import com.dber.base.exception.system.login.NotLoginException;
-import com.dber.base.web.vo.Account;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +41,7 @@ public interface ILoginService {
     boolean logout(HttpSession session);
 
     /**
-     * 注册账号
+     * 根据账号密码注册账号
      *
      * @param account
      * @param session
@@ -56,5 +56,4 @@ public interface ILoginService {
      */
     void getCaptcha(HttpServletRequest request, HttpServletResponse response);
 
-    boolean validVerificationCode(String code, HttpSession session);
 }

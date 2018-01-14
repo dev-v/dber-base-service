@@ -1,13 +1,25 @@
 package com.dber.base.config;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.dber.base.enums.DberSystem;
+import com.dber.base.util.BaseKeyUtil;
+import com.dber.cache.ICacheService;
+import com.dber.cache.config.CacheConfig;
 import com.dber.config.SpringConfig;
+import com.dber.config.SystemConfig;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,10 +60,18 @@ import com.dber.base.web.resolver.FastJsonArgumentResolver;
 @EnableWebMvc
 @EnableRedisHttpSession
 @EnableRedisRepositories
-@Import({ExceptionResolver.class, FastJsonViewResponseBodyAdvice.class, JCaptchaConfig.class})
+@Import({ExceptionResolver.class, FastJsonViewResponseBodyAdvice.class, CacheConfig.class, JCaptchaConfig.class})
 @EnableConfigurationProperties({SpringConfig.class})
 @EnableAutoConfiguration
-public class BaseWebConfig extends WebMvcConfigurerAdapter {
+public class BaseWebConfig extends WebMvcConfigurerAdapter implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
+
+    private static final Log log = LogFactory.getLog(BaseWebConfig.class);
+
+    @Autowired
+    SystemConfig systemConfig;
+
+    @Autowired
+    ICacheService cacheService;
 
     static {
         JSON.DEFAULT_PARSER_FEATURE |= SerializerFeature.WriteDateUseDateFormat.getMask();
@@ -129,5 +149,21 @@ public class BaseWebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public RequestParamMapMethodArgumentResolver requestParamMapMethodArgumentResolver() {
         return new RequestParamMapMethodArgumentResolver();
+    }
+
+    @Override
+    public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
+        int port = event.getEmbeddedServletContainer().getPort();
+        String ip = null;
+
+        try {
+            ip = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            log.error(e);
+        }
+
+        cacheService.put(
+                BaseKeyUtil.getBaseKey(DberSystem.valueOf(systemConfig.getService().getName().toUpperCase())),
+                "http://" + ip + ":" + port);
     }
 }

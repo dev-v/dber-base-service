@@ -5,8 +5,8 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 
+import com.dber.base.entity.Account;
 import com.dber.base.web.login.ILoginService;
-import com.dber.base.web.vo.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

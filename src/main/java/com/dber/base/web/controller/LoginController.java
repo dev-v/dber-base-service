@@ -1,8 +1,8 @@
 package com.dber.base.web.controller;
 
+import com.dber.base.entity.Account;
 import com.dber.base.exception.system.login.NotLoginException;
 import com.dber.base.web.login.ILoginService;
-import com.dber.base.web.vo.Account;
 import com.dber.base.web.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
