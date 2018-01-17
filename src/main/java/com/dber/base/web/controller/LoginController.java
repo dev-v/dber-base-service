@@ -3,6 +3,7 @@ package com.dber.base.web.controller;
 import com.dber.base.entity.Account;
 import com.dber.base.exception.system.login.NotLoginException;
 import com.dber.base.web.login.ILoginService;
+import com.dber.base.web.vo.Login;
 import com.dber.base.web.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,29 +35,22 @@ public class LoginController {
     }
 
     @RequestMapping("login")
-    public Response<Account> login(Account account, HttpSession session) {
-        account = loginService.login(account, session);
-        return Response.newSuccessResponse(account);
+    public Response<Login> login(Account account) {
+        return Response.newSuccessResponse(loginService.login(account));
     }
 
-    @RequestMapping("getAccount")
-    public Response<Account> getAccount(HttpSession session) {
-        Account account = null;
-        try {
-            account = loginService.getAccount(session);
-        } catch (NotLoginException e) {
-
-        }
-        return Response.newSuccessResponse(account);
+    @RequestMapping("getLogin")
+    public Response<Login> getLogin() {
+        return Response.newSuccessResponse(loginService.getLogin());
     }
 
     @RequestMapping("logout")
-    public Response<Boolean> logout(HttpSession session) {
-        return Response.newSuccessResponse(loginService.logout(session));
+    public Response<Boolean> logout() {
+        return Response.newSuccessResponse(loginService.logout());
     }
 
     @RequestMapping("regist")
-    public Response regist(Account account, HttpSession session) {
-        return Response.newSuccessResponse(loginService.regist(account, session));
+    public Response regist(Account account) {
+        return Response.newSuccessResponse(loginService.regist(account));
     }
 }

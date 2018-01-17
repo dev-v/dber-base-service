@@ -2,8 +2,12 @@ package com.dber.base.web.login;
 
 import com.dber.base.entity.Account;
 import com.dber.base.entity.VerifyWay;
+import com.dber.base.enums.DberSystem;
 import com.dber.base.exception.system.login.*;
 import com.dber.base.login.ILoginHelper;
+import com.dber.base.result.Result;
+import com.dber.base.web.Interceptor.DberControllerInceptor;
+import com.dber.base.web.vo.Login;
 import com.dber.util.CipherUtil;
 import com.dber.util.Util;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
@@ -14,68 +18,106 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
 @Service
 public class DefaultLoginService implements ILoginService {
-    private static final String ACCOUNT_KEY = "LOGIN_ACCOUNT";
+    private static final String SESSION_KEY_PREFIX = "_DBER_SESSION_";
+    private String SYSTEM_KEY;
+    private String ACCOUNT_KEY = "LOGIN_ACCOUNT";
     private static final Log log = LogFactory.getLog(DefaultLoginService.class);
 
     @Autowired
     GenericManageableCaptchaService captchaService;
 
     @Autowired
+    private DberSystem dberSystem;
+
+    @Autowired
     private ILoginHelper loginHelper;
 
     @Override
-    public Account getAccount(HttpSession session) throws NotLoginException {
-        Object obj = session.getAttribute(ACCOUNT_KEY);
-        if (obj == null) {
+    public Login getLogin() throws NotLoginException {
+        Login login = get(ACCOUNT_KEY, Login.class);
+        if (login == null) {
+            login = new Login();
+        }
+        return login;
+    }
+
+    @Override
+    public Account getAccount() throws NotLoginException {
+        Login login = getLogin();
+        if (login.getAccount() == null) {
             throw new NotLoginException();
-        } else {
-            return (Account) obj;
         }
+        return login.getAccount();
     }
 
     @Override
-    public Account login(Account account, HttpSession session) {
-        VerifyWay verifyWay = account.getVerifyWay();
-        if (verifyWay == VerifyWay.account) {
-            account = checkByAccountName(account);
-        } else if (verifyWay == VerifyWay.cellphone) {
-
-        } else if (verifyWay == VerifyWay.alipay) {
-
-        } else if (verifyWay == VerifyWay.wechat) {
-
-        } else if (verifyWay == VerifyWay.qq) {
-
-        }
-        session.setAttribute(ACCOUNT_KEY, account);
-        return account;
+    public Integer getAccountId() throws NotLoginException {
+        return getAccount().getId();
     }
 
     @Override
-    public boolean logout(HttpSession session) {
-        session.invalidate();
+    public Login login(Account account) {
+        Login login = getLogin();
+        if (login.isNeedCaptcha()) {
+            if (!captchaService.validateResponseForID(DberControllerInceptor.getSession().getId(), account.getCaptcha()).booleanValue()) {
+                throw new ErrorVerificationCodeException();
+            }
+        }
+        try {
+            VerifyWay verifyWay = account.getVerifyWay();
+            if (verifyWay == VerifyWay.account) {
+                account = checkByAccountName(account);
+            } else if (verifyWay == VerifyWay.cellphone) {
+
+            } else if (verifyWay == VerifyWay.alipay) {
+
+            } else if (verifyWay == VerifyWay.wechat) {
+
+            } else if (verifyWay == VerifyWay.qq) {
+
+            } else {
+                throw new IllegalArgumentException("请设置登录方式！");
+            }
+            login.setAccount(account);
+        } catch (Exception e) {
+            login.setNeedCaptcha(true);
+            storeLogin(login);
+            throw e;
+        }
+        storeLogin(login);
+        return login;
+    }
+
+    private void storeLogin(Login login) {
+        store(ACCOUNT_KEY, login);
+    }
+
+    @Override
+    public boolean logout() {
+        DberControllerInceptor.getSession().invalidate();
         return true;
     }
 
     @Override
-    public boolean regist(Account account, HttpSession session) {
-        if (captchaService.validateResponseForID(session.getId(), account.getCaptcha())) {
+    public boolean regist(Account account) {
+        if (captchaService.validateResponseForID(DberControllerInceptor.getSession().getId(), account.getCaptcha())) {
             Account queryAccount = new Account();
             queryAccount.setName(account.getName());
             if (loginHelper.getAccount(account) != null) {
                 throw new AccountExistException();
             }
-            loginHelper.saveAccount(account);
-            return true;
+            account.setPassword(CipherUtil.SHAEncode(account.getPassword()));
+            Result<Account> result = loginHelper.saveAccount(account);
+            return result.isSuccess();
         } else {
             throw new ErrorVerificationCodeException();
         }
@@ -111,6 +153,21 @@ public class DefaultLoginService implements ILoginService {
         }
     }
 
+    @Override
+    public void store(String key, Object val) {
+        DberControllerInceptor.getSession().setAttribute(SYSTEM_KEY + key, val);
+    }
+
+    @Override
+    public <E> E get(String key, Class<E> clz) {
+        Object obj = DberControllerInceptor.getSession().getAttribute(SYSTEM_KEY + key);
+        if (obj == null) {
+            return null;
+        } else {
+            return (E) obj;
+        }
+    }
+
     private Account checkByAccountName(Account account) {
         String name = account.getName();
         String pass = account.getPassword();
@@ -128,5 +185,11 @@ public class DefaultLoginService implements ILoginService {
         } else {
             throw new ErrorPasswordException();
         }
+    }
+
+
+    @PostConstruct
+    private void init() {
+        SYSTEM_KEY = this.dberSystem.name() + SESSION_KEY_PREFIX;
     }
 }

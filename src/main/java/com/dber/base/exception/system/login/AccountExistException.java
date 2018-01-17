@@ -1,11 +1,12 @@
 package com.dber.base.exception.system.login;
 
 import com.dber.base.exception.BaseException;
+import com.dber.base.exception.BusinessException;
 import com.dber.base.exception.FrameworkException;
 
-public class AccountExistException extends FrameworkException {
+public class AccountExistException extends BusinessException {
 
-    private static final int code = 605;
+    private static final int code = 10002;
 
     static {
         BaseException.registCode(code, AccountExistException.class);

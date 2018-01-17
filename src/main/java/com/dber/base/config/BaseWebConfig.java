@@ -9,6 +9,7 @@ import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.dber.base.enums.DberSystem;
 import com.dber.base.util.BaseKeyUtil;
+import com.dber.base.web.Interceptor.DberControllerInceptor;
 import com.dber.cache.ICacheService;
 import com.dber.cache.config.CacheConfig;
 import com.dber.config.SpringConfig;
@@ -34,6 +35,7 @@ import org.springframework.web.method.annotation.RequestParamMapMethodArgumentRe
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -73,11 +75,21 @@ public class BaseWebConfig extends WebMvcConfigurerAdapter implements Applicatio
     @Autowired
     ICacheService cacheService;
 
+    @Bean
+    public DberSystem dberSystem() {
+        return DberSystem.valueOf(systemConfig.getService().getName().toUpperCase());
+    }
+
     static {
         JSON.DEFAULT_PARSER_FEATURE |= SerializerFeature.WriteDateUseDateFormat.getMask();
         JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new DberControllerInceptor());
+        super.addInterceptors(registry);
+    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -162,8 +174,6 @@ public class BaseWebConfig extends WebMvcConfigurerAdapter implements Applicatio
             log.error(e);
         }
 
-        cacheService.put(
-                BaseKeyUtil.getBaseKey(DberSystem.valueOf(systemConfig.getService().getName().toUpperCase())),
-                "http://" + ip + ":" + port);
+        cacheService.put(BaseKeyUtil.getBaseKey(dberSystem()), "http://" + ip + ":" + port);
     }
 }

@@ -2,10 +2,10 @@ package com.dber.base.web.login;
 
 import com.dber.base.entity.Account;
 import com.dber.base.exception.system.login.NotLoginException;
+import com.dber.base.web.vo.Login;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * <li>文件名称: ILoginCheckService.java</li>
@@ -21,13 +21,24 @@ public interface ILoginService {
 
     /**
      * <pre>
-     * 获取已登录用户的账号信息
+     * 获取登录用户的账号信息
      * </pre>
      *
      * @return 账号
-     * 没登录或登录过期 且force为true时抛出异常
      */
-    Account getAccount(HttpSession session) throws NotLoginException;
+    Login getLogin();
+
+    /**
+     * @return
+     * @throws NotLoginException
+     */
+    Account getAccount() throws NotLoginException;
+
+    /**
+     * @return
+     * @throws NotLoginException
+     */
+    Integer getAccountId() throws NotLoginException;
 
     /**
      * 进行登录操作
@@ -36,18 +47,17 @@ public interface ILoginService {
      * @param account
      * @return 返回登录成功的账户信息
      */
-    Account login(Account account, HttpSession session);
+    Login login(Account account);
 
-    boolean logout(HttpSession session);
+    boolean logout();
 
     /**
      * 根据账号密码注册账号
      *
      * @param account
-     * @param session
      * @return 注册成功返回true
      */
-    boolean regist(Account account, HttpSession session);
+    boolean regist(Account account);
 
     /**
      * 获取验证码(图形验证码或手机验证码)
@@ -56,4 +66,18 @@ public interface ILoginService {
      */
     void getCaptcha(HttpServletRequest request, HttpServletResponse response);
 
+    /**
+     * 往session存储数据
+     *
+     * @param key
+     * @param val
+     */
+    void store(String key, Object val);
+
+    /**
+     * 获取数据
+     *
+     * @param key
+     */
+    <E> E get(String key, Class<E> clz);
 }

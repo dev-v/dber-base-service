@@ -35,12 +35,12 @@ import java.awt.*;
  */
 @Configuration
 public class JCaptchaConfig {
-    private static final int width = 270;
-    private static final int height = 70;
-    private static final int minFontSize = 30;
-    private static final int maxFontSize = 50;
+    private static final int width = 150;
+    private static final int height = 39;
+    private static final int minFontSize = 28;
+    private static final int maxFontSize = 31;
     private static final Color[] textColors = {Color.decode("#e6f7ff"), Color.decode("#b5f5ec"), Color.white, Color.decode("#d9f7be"), Color.decode("#fff566"), Color.decode("#f4ffb8")};
-    private static final Color[] lineColors = {Color.blue, Color.lightGray, Color.pink, Color.BLACK};
+    private static final Color[] lineColors = {Color.blue, Color.lightGray, Color.pink};
     private static final Color[] backgroundColors = {Color.decode("#fa8c16"), Color.decode("#ad6800"), Color.decode("#876800"), Color.decode("#3f6600")};
 
 
