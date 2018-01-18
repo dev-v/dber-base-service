@@ -1,6 +1,6 @@
 package com.dber.base.web.advice;
 
-import com.dber.base.web.controller.AbstractReadController;
+import com.dber.base.web.controller.ILoginCheckController;
 import com.dber.base.web.login.ILoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  * @version 1.0
  * @since 2018/1/15
  */
-@ControllerAdvice(assignableTypes = {AbstractReadController.class})
+@ControllerAdvice(assignableTypes = {ILoginCheckController.class})
 @Component
 public class DberControllerAdvice {
 

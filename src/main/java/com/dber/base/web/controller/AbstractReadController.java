@@ -22,7 +22,7 @@ import java.util.Collection;
  * @version 1.0
  * @since 2018/1/17
  */
-public abstract class AbstractReadController<E> {
+public abstract class AbstractReadController<E> implements ILoginCheckController {
 
     @Autowired
     private ILoginService loginService;
