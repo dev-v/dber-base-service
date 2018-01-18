@@ -9,7 +9,7 @@ import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.dber.base.enums.DberSystem;
 import com.dber.base.util.BaseKeyUtil;
-import com.dber.base.web.Interceptor.DberControllerInceptor;
+import com.dber.base.web.Interceptor.DberSessionControllerInceptor;
 import com.dber.cache.ICacheService;
 import com.dber.cache.config.CacheConfig;
 import com.dber.config.SpringConfig;
@@ -87,7 +87,7 @@ public class BaseWebConfig extends WebMvcConfigurerAdapter implements Applicatio
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new DberControllerInceptor());
+        registry.addInterceptor(new DberSessionControllerInceptor());
         super.addInterceptors(registry);
     }
 

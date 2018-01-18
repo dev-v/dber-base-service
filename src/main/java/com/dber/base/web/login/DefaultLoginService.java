@@ -2,11 +2,10 @@ package com.dber.base.web.login;
 
 import com.dber.base.entity.Account;
 import com.dber.base.entity.VerifyWay;
-import com.dber.base.enums.DberSystem;
 import com.dber.base.exception.system.login.*;
 import com.dber.base.login.ILoginHelper;
 import com.dber.base.result.Result;
-import com.dber.base.web.Interceptor.DberControllerInceptor;
+import com.dber.base.web.Interceptor.DberSessionControllerInceptor;
 import com.dber.base.web.vo.Login;
 import com.dber.util.CipherUtil;
 import com.dber.util.Util;
@@ -18,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +25,6 @@ import java.io.ByteArrayOutputStream;
 
 @Service
 public class DefaultLoginService implements ILoginService {
-    private static final String SESSION_KEY_PREFIX = "_DBER_SESSION_";
-    private String SYSTEM_KEY;
     private String ACCOUNT_KEY = "LOGIN_ACCOUNT";
     private static final Log log = LogFactory.getLog(DefaultLoginService.class);
 
@@ -36,14 +32,11 @@ public class DefaultLoginService implements ILoginService {
     GenericManageableCaptchaService captchaService;
 
     @Autowired
-    private DberSystem dberSystem;
-
-    @Autowired
     private ILoginHelper loginHelper;
 
     @Override
     public Login getLogin() throws NotLoginException {
-        Login login = get(ACCOUNT_KEY, Login.class);
+        Login login = get(ACCOUNT_KEY);
         if (login == null) {
             login = new Login();
         }
@@ -68,7 +61,7 @@ public class DefaultLoginService implements ILoginService {
     public Login login(Account account) {
         Login login = getLogin();
         if (login.isNeedCaptcha()) {
-            if (!captchaService.validateResponseForID(DberControllerInceptor.getSession().getId(), account.getCaptcha()).booleanValue()) {
+            if (!captchaService.validateResponseForID(DberSessionControllerInceptor.getSessionId(), account.getCaptcha()).booleanValue()) {
                 throw new ErrorVerificationCodeException();
             }
         }
@@ -103,13 +96,17 @@ public class DefaultLoginService implements ILoginService {
 
     @Override
     public boolean logout() {
-        DberControllerInceptor.getSession().invalidate();
+        Login login = getLogin();
+        // 这里必须校验是为登录状态 否则存在风险
+        if (login != null && login.isLogined()) {
+            DberSessionControllerInceptor.remove(ACCOUNT_KEY);
+        }
         return true;
     }
 
     @Override
     public boolean regist(Account account) {
-        if (captchaService.validateResponseForID(DberControllerInceptor.getSession().getId(), account.getCaptcha())) {
+        if (captchaService.validateResponseForID(DberSessionControllerInceptor.getSessionId(), account.getCaptcha())) {
             Account queryAccount = new Account();
             queryAccount.setName(account.getName());
             if (loginHelper.getAccount(account) != null) {
@@ -155,17 +152,12 @@ public class DefaultLoginService implements ILoginService {
 
     @Override
     public void store(String key, Object val) {
-        DberControllerInceptor.getSession().setAttribute(SYSTEM_KEY + key, val);
+        DberSessionControllerInceptor.store(key, val);
     }
 
     @Override
-    public <E> E get(String key, Class<E> clz) {
-        Object obj = DberControllerInceptor.getSession().getAttribute(SYSTEM_KEY + key);
-        if (obj == null) {
-            return null;
-        } else {
-            return (E) obj;
-        }
+    public <E> E get(String key) {
+        return DberSessionControllerInceptor.get(key);
     }
 
     private Account checkByAccountName(Account account) {
@@ -185,11 +177,5 @@ public class DefaultLoginService implements ILoginService {
         } else {
             throw new ErrorPasswordException();
         }
-    }
-
-
-    @PostConstruct
-    private void init() {
-        SYSTEM_KEY = this.dberSystem.name() + SESSION_KEY_PREFIX;
     }
 }

@@ -79,5 +79,5 @@ public interface ILoginService {
      *
      * @param key
      */
-    <E> E get(String key, Class<E> clz);
+    <E> E get(String key);
 }
