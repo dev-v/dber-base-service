@@ -1,9 +1,8 @@
 package com.dber.base.web.controller;
 
+import com.dber.base.web.vo.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.dber.base.web.vo.Response;
 
 /**
  * <li>文件名称: AbstractController.java</li>
@@ -20,7 +19,7 @@ import com.dber.base.web.vo.Response;
  * @version 1.0
  * @since 2017年12月21日
  */
-public abstract class AbstractController<E> extends AbstractReadController{
+public abstract class AbstractController<E> extends AbstractReadController {
 
     @RequestMapping("/insert")
     public Response<E> insert(E e) {
@@ -67,6 +66,18 @@ public abstract class AbstractController<E> extends AbstractReadController{
     @RequestMapping("/del/{id}")
     public Response<Integer> del(@PathVariable long id) {
         return Response.newSuccessResponse(service.del(id));
+    }
+
+    /**
+     * <pre>
+     * 根据条件删除数据
+     * </pre>
+     *
+     * @return
+     */
+    @RequestMapping("/delWithCondition")
+    public Response<Integer> del(E e) {
+        return Response.newSuccessResponse(service.del(e));
     }
 
     /**
