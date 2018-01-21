@@ -125,4 +125,6 @@ public interface IMapper<E> {
 	 * @return
 	 */
 	int dels(Serializable[] keys);
+
+    int delByCondition(E e);
 }

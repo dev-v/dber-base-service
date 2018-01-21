@@ -1,4 +1,4 @@
-package com.dber.base.mybatis.plugin.pagination;
+package com.dber.base.mybatis.plugin.pagination.ext;
 
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;

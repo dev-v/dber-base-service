@@ -76,6 +76,11 @@ public abstract class AbstractService<E> implements IService<E> {
         return mapper.dels(keys);
     }
 
+    @Override
+    public int del(E e) {
+        return mapper.delByCondition(e);
+    }
+
     /**
      * <pre>
      * 返回操作实体 < E > 的纯mapper对象

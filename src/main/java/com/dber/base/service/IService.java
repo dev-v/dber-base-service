@@ -127,4 +127,11 @@ public interface IService<E> {
      * @return
      */
     int dels(Serializable[] keys);
+
+    /**
+     * 根据删除条件删除数据
+     * @param e
+     * @return
+     */
+    int del(E e);
 }

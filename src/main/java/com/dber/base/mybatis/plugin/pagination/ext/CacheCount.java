@@ -1,4 +1,4 @@
-package com.dber.base.mybatis.plugin.pagination;
+package com.dber.base.mybatis.plugin.pagination.ext;
 
 import com.dber.base.mybatis.plugin.pagination.page.Page;
 import com.mysql.jdbc.util.LRUCache;
