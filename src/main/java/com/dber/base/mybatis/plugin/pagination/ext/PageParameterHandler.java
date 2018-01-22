@@ -66,10 +66,13 @@ public class PageParameterHandler {
             Object parameterObject = boundSql.getParameterObject();
             int size = parameterMappings.size();
             List<PageParameter> parameters = new ArrayList<>(size);
+            MetaObject metaObject = configuration.newMetaObject(parameterObject);
+            Object value;
+            ParameterMapping parameterMapping;
             for (int i = 0; i < size; i++) {
-                ParameterMapping parameterMapping = parameterMappings.get(i);
+                parameterMapping = parameterMappings.get(i);
                 if (parameterMapping.getMode() != ParameterMode.OUT) {
-                    Object value = null;
+                    value = null;
                     String propertyName = parameterMapping.getProperty();
                     if (boundSql.hasAdditionalParameter(propertyName)) { // issue #448 ask first for additional params
                         value = boundSql.getAdditionalParameter(propertyName);
@@ -78,7 +81,6 @@ public class PageParameterHandler {
                     } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
                         value = parameterObject;
                     } else {
-                        MetaObject metaObject = configuration.newMetaObject(parameterObject);
                         value = metaObject.getValue(propertyName);
                     }
                     TypeHandler<?> typeHandler = parameterMapping.getTypeHandler();
