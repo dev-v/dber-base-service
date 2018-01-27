@@ -1,12 +1,9 @@
 package com.dber.base.web.controller;
 
-import com.dber.base.entity.Account;
-import com.dber.base.exception.system.login.NotLoginException;
+import com.dber.base.login.LoginCheckController;
 import com.dber.base.mybatis.plugin.pagination.page.Page;
 import com.dber.base.service.IService;
-import com.dber.base.web.login.ILoginService;
-import com.dber.base.web.vo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dber.base.entity.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,20 +19,9 @@ import java.util.Collection;
  * @version 1.0
  * @since 2018/1/17
  */
-public abstract class AbstractReadController<E> implements ILoginCheckController {
-
-    @Autowired
-    private ILoginService loginService;
+public abstract class AbstractReadController<E> extends LoginCheckController {
 
     protected IService<E> service;
-
-    public Account getAccount() throws NotLoginException {
-        return loginService.getAccount();
-    }
-
-    public Integer getAccountId() throws NotLoginException {
-        return loginService.getAccountId();
-    }
 
     /**
      * <pre>

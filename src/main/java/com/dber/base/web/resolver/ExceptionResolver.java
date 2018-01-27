@@ -16,7 +16,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import com.dber.base.web.vo.Response;
+import com.dber.base.entity.Response;
 import com.dber.base.exception.BaseException;
 import com.dber.base.exception.system.ThirdException;
 

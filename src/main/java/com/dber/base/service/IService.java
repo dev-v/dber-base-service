@@ -107,6 +107,8 @@ public interface IService<E> {
      */
     E queryOne(E e);
 
+    boolean has(E e);
+
     /**
      * <pre>
      * 根据条件获取主键集合
@@ -134,4 +136,11 @@ public interface IService<E> {
      * @return
      */
     int del(E e);
+
+    /**
+     * 根据查询条件获取满足条件的记录数量
+     * @param e
+     * @return
+     */
+    int count(E e);
 }

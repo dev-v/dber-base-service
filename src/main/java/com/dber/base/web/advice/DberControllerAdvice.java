@@ -1,7 +1,7 @@
 package com.dber.base.web.advice;
 
-import com.dber.base.web.controller.ILoginCheckController;
-import com.dber.base.web.login.ILoginService;
+import com.dber.base.login.ILoginCheckController;
+import com.dber.base.login.ILoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;

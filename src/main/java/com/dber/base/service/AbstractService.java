@@ -1,12 +1,11 @@
 package com.dber.base.service;
 
-import java.io.Serializable;
-import java.util.Collection;
-
-import javax.annotation.PostConstruct;
-
 import com.dber.base.mapper.IMapper;
 import com.dber.base.mybatis.plugin.pagination.page.Page;
+
+import javax.annotation.PostConstruct;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * <li>文件名称: AbstraService.java</li>
@@ -67,6 +66,11 @@ public abstract class AbstractService<E> implements IService<E> {
         return mapper.queryOne(e);
     }
 
+    @Override
+    public boolean has(E e) {
+        return mapper.has(e) != null;
+    }
+
     public long[] getIds(E e) {
         return mapper.getIds(e);
     }
@@ -79,6 +83,11 @@ public abstract class AbstractService<E> implements IService<E> {
     @Override
     public int del(E e) {
         return mapper.delByCondition(e);
+    }
+
+    @Override
+    public int count(E e) {
+        return mapper.count(e);
     }
 
     /**

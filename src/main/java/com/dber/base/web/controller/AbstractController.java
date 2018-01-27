@@ -1,6 +1,6 @@
 package com.dber.base.web.controller;
 
-import com.dber.base.web.vo.Response;
+import com.dber.base.entity.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
