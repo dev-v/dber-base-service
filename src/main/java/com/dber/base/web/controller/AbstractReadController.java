@@ -1,9 +1,9 @@
 package com.dber.base.web.controller;
 
+import com.dber.base.entity.Response;
 import com.dber.base.login.LoginCheckController;
 import com.dber.base.mybatis.plugin.pagination.page.Page;
 import com.dber.base.service.IService;
-import com.dber.base.entity.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -60,7 +60,7 @@ public abstract class AbstractReadController<E> extends LoginCheckController {
     public Response<Page<E>> query(@PathVariable int currentPage, E data) {
         Page<E> page = new Page<>(currentPage);
         page.setCondition(data);
-        page.setSort("modify_time desc");
+        page.setSort("id desc");
         service.query(page);
         return Response.newSuccessResponse(page);
     }
