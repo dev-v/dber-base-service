@@ -1,7 +1,7 @@
 package com.dber.base.service;
 
 import com.dber.base.mapper.IMapper;
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;

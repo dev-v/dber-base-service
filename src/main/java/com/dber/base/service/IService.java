@@ -3,7 +3,7 @@ package com.dber.base.service;
 import java.io.Serializable;
 import java.util.Collection;
 
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 
 /**
  * <li>文件名称: IService.java</li>

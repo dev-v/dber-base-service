@@ -2,7 +2,7 @@ package com.dber.base.web.controller;
 
 import com.dber.base.entity.Response;
 import com.dber.base.login.LoginCheckController;
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 import com.dber.base.service.IService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

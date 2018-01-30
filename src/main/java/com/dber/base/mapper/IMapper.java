@@ -1,6 +1,6 @@
 package com.dber.base.mapper;
 
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 
 import java.io.Serializable;
 import java.util.Collection;

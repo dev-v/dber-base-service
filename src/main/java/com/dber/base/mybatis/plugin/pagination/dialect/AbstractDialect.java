@@ -3,7 +3,7 @@ package com.dber.base.mybatis.plugin.pagination.dialect;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 
 /**
  * <li>文件名称: AbstractDialect.java</li>

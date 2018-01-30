@@ -5,7 +5,7 @@ import com.dber.base.mybatis.plugin.pagination.dialect.MysqlDialect;
 import com.dber.base.mybatis.plugin.pagination.ext.CacheCount;
 import com.dber.base.mybatis.plugin.pagination.ext.PageConditionParseSqlSource;
 import com.dber.base.mybatis.plugin.pagination.ext.PageParameterHandler;
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;

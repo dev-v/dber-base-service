@@ -1,6 +1,6 @@
 package com.dber.base.mybatis.plugin.pagination.dialect;
 
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 import com.dber.util.Util;
 
 /**

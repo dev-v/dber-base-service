@@ -1,6 +1,6 @@
 package com.dber.base.mybatis.plugin.pagination.ext;
 
-import com.dber.base.mybatis.plugin.pagination.page.Page;
+import com.dber.base.result.Page;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
